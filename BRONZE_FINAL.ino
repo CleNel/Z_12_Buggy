@@ -31,14 +31,6 @@ int echoT = 1;
 
 void setup() {
   Serial.begin(9600);
-  /*
-  WiFi.beginAP(ssid, pass);
-  IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address:");
-  Serial.println(ip);
-  server.begin();
-  */
-
   String firmware_version = WiFi.firmwareVersion();
 
 
@@ -70,17 +62,18 @@ void setup() {
 }
 
 double distanceUS(int t) {
-  return t * (0.343 / 2);
+  return t * 0.172;
 }
 
 void Echoed() {
   echoT = micros();
-  distance = distanceUS(echoT - trigT);
-  Serial.println(distance);
-  if (distance < 300.0) {
+  distance = distanceUS(echoT - trigT - 480);
+  //Serial.println(String(distance) + "mm");
+  //Serial.println(String(echoT - trigT - 480) + "us");
+  if (distance < 100.0) {
     if (!sentStop) {
       stop();
-      send("Object");
+      send("Stopped: Object detected at " + String(distance)+"mm");
       sentStop = true;
       stopped = true;
       cleared = false;
@@ -110,29 +103,33 @@ void loop() {
     // Read Data
     if (client.connected()) {
       if (client.available()) data = client.readStringUntil('\n');
-      else data = "";
-    } else data = "";
+    }
   } else client = server.available();
 
   // Execute Commands
   if (data.length() > 0) {
+    //Serial.println(data);
     if (data == "go") go = true;
     else if (data == "stop") go = false;
+
+    // Refresh data
+    data = "";    
   }
 
   if (go) {
     //low is white
-    //char command=client.read();
     if (!stopped) {
       slow_straight();
-      if (digitalRead(LEYE) == LOW) {
+      if (digitalRead(LEYE) == LOW && digitalRead(REYE) == LOW) stop();
+      
+      else if (digitalRead(LEYE) == LOW) {
         soft_right_turn();
-        client.write("Turn right");
+        send("Turn right");
       }
-      //delay(50);
-      if (digitalRead(REYE) == LOW) {
+ 
+      else if (digitalRead(REYE) == LOW) {
         soft_left_turn();
-        client.write("Turn left");
+        send("Turn left");
       }      
     }
 
@@ -144,34 +141,7 @@ void loop() {
     delayMicroseconds(5);
     trigT = micros();
     digitalWrite(TRIG, LOW);
-
-    /*
-    int currentTime=millis();
-    if (currentTime-lastTime>500){
-        digitalWrite(TRIG, LOW);
-        delayMicroseconds(2);
-        digitalWrite(TRIG, HIGH);
-        delayMicroseconds(10);
-        digitalWrite(TRIG, LOW);
-        duration = pulseIn(ECHO, HIGH);
-        distance = duration/58;
-        int lastTime=millis();
-      }
-
-      if (distance<10){
-        if (!sentStop) {
-          sentStop = true;
-          stop();
-          delay(500);
-          client.write("Stopped");
-          stopped=true;
-        }
-      } else sentStop = false;
-    }
-    */
-  }
-  else
-      stop();
+  } else stop();
 }
 
 
@@ -181,10 +151,6 @@ void slow_straight() {
   analogWrite(H_BRIDGE_LEFT_A, 100);
   analogWrite(H_BRIDGE_RIGHT_A, 100);
   analogWrite(H_BRIDGE_RIGHT_B, 0);
-  if (stopped == true) {
-    stopped = false;
-    client.write("moving again");
-  }
 }
 
 //Right
