@@ -77,7 +77,7 @@ void Echoed() {
   echoT = micros();
   distance = distanceUS(echoT - trigT);
   Serial.println(distance);
-  if (distance < 100.0) {
+  if (distance < 300.0) {
     if (!sentStop) {
       stop();
       send("Object");
