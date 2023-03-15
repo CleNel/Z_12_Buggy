@@ -70,7 +70,7 @@ void Echoed() {
   distance = distanceUS(echoT - trigT - 480);
   //Serial.println(String(distance) + "mm");
   //Serial.println(String(echoT - trigT - 480) + "us");
-  if (distance < 100.0) {
+  if (distance < 200.0) {
     if (!sentStop) {
       stop();
       send("Stopped: Object detected at " + String(distance)+"mm");
