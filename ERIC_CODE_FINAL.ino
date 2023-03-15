@@ -170,6 +170,8 @@ void loop() {
     }
     */
   }
+  else
+      stop();
 }
 
 
