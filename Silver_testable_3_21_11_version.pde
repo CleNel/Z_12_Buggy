@@ -4,29 +4,33 @@ ControlP5 cp5;
 Client myClient;
 String data;
 String command;
+PImage background;
 
 void setup() {
   //connects to server
   myClient = new Client(this,"192.168.86.201",5200);
   myClient.write("I am a new client");
-  size(640,400);
+  size(834,538);
   cp5= new ControlP5(this);
   //makes buttons
-  cp5.addButton("Go").setValue(0).setPosition(320-100,240).setSize(200,19);
-  cp5.addButton("Stop").setValue(0).setPosition(320-100,280).setSize(200,19);
+  cp5.addButton("Go").setValue(0).setPosition(400-100,417).setSize(15,15);
+  cp5.addButton("Stop").setValue(0).setPosition(612-100,417).setSize(15,15);
   //background colour
-  background(255, 255, 10);
-  textSize(30);
-  text("buggy speed (cm/s):", 100, 350); 
-  //fill(0, 408, 612);
-  text("object speed (cm/s):", 100, 390);
-  //fill(99, 99, 99);
-  noStroke();
+  background = loadImage("C:\\Users\\Garym\\OneDrive\\Pictures\\spaceshiptester.jpg");
+  
+ 
   }
 
 void draw() {
   //data = "5,22";
   data = myClient.readString();
+   textSize(15);
+   background(background);
+  text("buggy speed \n (cm/s):", 10, 140); 
+  //fill(0, 408, 612);
+  text("object speed \n (cm/s):", 690, 140);
+  //fill(99, 99, 99);
+  noStroke();
   myClient.clear();
   if(data != null){
     //println(data);
