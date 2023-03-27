@@ -329,6 +329,7 @@ void soft_left_turn() {
   analogWrite(H_BRIDGE_RIGHT_A, 225);
   delay(300);
 }
+//205 30 on oval
 //stop
 void stop() {
   analogWrite(H_BRIDGE_LEFT_B, 0);
