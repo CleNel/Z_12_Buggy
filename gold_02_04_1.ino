@@ -17,6 +17,13 @@ bool b = false;
 bool l = false;
 bool r = false;
 bool s = false;
+unsigned long start_time, function_time;
+double time_elap = 0;
+double right_time = 0;
+double left_time = 0;
+double rev_time = 0;
+double stop_time = 0;
+double straight_time = 0;
 int speed;
 double xcoord;
 double ycoord;
@@ -106,23 +113,43 @@ void loop() {
       }
       //b = true;
       if(f){
+        start_time = micros();
         slow_straight();
         xcoord=xcoord+velocity*cos(0.01745329*angle)*time;
         ycoord=ycoord+velocity*sin(0.01745329*angle)*time;
+        function_time = micros();
+        time_elap = function_time - start_time;
+        straight_time = straight_time + time_elap;
       }
       if(s){
+        start_time = micros();
         stop();
+        function_time = micros();
+        time_elap = function_time - start_time;
+        stop_time = stop_time + time_elap;
       }
       if(b){
+        start_time = micros();
         reverse();
+        function_time = micros();
+        time_elap = function_time - start_time;
+        rev_time = rev_time + time_elap;
       }
 
       if(l){
+        start_time = micros();
         soft_left_turn();
+        function_time = micros();
+        time_elap = function_time - start_time;
+        left_time = left_time + time_elap;
       }
 
       if(r){
+        start_time = micros();
         soft_right_turn();
+        function_time = micros();
+        time_elap = function_time - start_time;
+        right_time = right_time + time_elap;
       }
 
       // Refresh data
